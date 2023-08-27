@@ -1,0 +1,12 @@
+{
+	"redefinable-internals": [
+		"curl_init",
+		"curl_setopt",
+		"curl_close",
+		"curl_exec",
+		"curl_getinfo",
+		"curl_error",
+		"sleep",
+		"usleep"
+	]
+}

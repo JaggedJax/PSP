@@ -1,0 +1,29 @@
+<phpunit
+		bootstrap="phpunit_bootstrap.php" backupGlobals="false" colors="true" testdox="true">
+	<php>
+		<var name="unit_test" value="true" />
+		<ini name="memory_limit" value="512M" />
+	</php>
+
+	<logging>
+		<testdoxText outputFile="./test_results/results.txt"/>
+		<testdoxHtml outputFile="./test_results/results.html" />
+	</logging>
+
+	<testsuites>
+		<testsuite name="main">
+			<directory>src</directory>
+		</testsuite>
+	</testsuites>
+
+	<coverage>
+		<include>
+			<directory suffix=".php">.</directory>
+		</include>
+		<exclude>
+			<directory suffix=".php">vendor</directory>
+			<directory suffix=".php">tests</directory>
+		</exclude>
+	</coverage>
+
+</phpunit>
