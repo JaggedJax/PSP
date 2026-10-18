@@ -8,7 +8,7 @@ use OpenTelemetry\API\Trace\SpanInterface;
 use OpenTelemetry\API\Trace\SpanKind;
 use OpenTelemetry\API\Trace\StatusCode;
 use OpenTelemetry\Context\ScopeInterface;
-use PSP\Cache\DataCache;
+use PSP\Cache\DBCache;
 use PSP\Cache\MemCache;
 use PSP\Db\DBTable;
 use PSP\Db\History;
@@ -106,7 +106,7 @@ class Bootstrap
 			Server::trust_ip_headers(...$options['trusted_ip_headers']);
 		}
 		if (!empty($options['cache_levels'])) {
-			DataCache::add_cache_levels(...$options['cache_levels']);
+			DBCache::add_cache_levels(...$options['cache_levels']);
 		}
 		if (isset($options['changed_by'])) {
 			History::set_changed_by_resolver($options['changed_by']);

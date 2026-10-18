@@ -3,8 +3,8 @@
 namespace PSP\Util;
 
 use PSP\App\Config;
-use PSP\Cache\DataCache;
-use PSP\Cache\DataCacheResult;
+use PSP\Cache\DBCache;
+use PSP\Cache\DBCacheResult;
 use PSP\Http\Http;
 use PSP\Log\Log;
 
@@ -14,7 +14,7 @@ use PSP\Log\Log;
  *
  * Uses the HIBP "Pwned Passwords" k-anonymity range API: only the first 5 characters of the
  * password's SHA-1 hash are ever sent, so the plaintext password (and even its full hash) never
- * leaves our server. Range responses are cached via DataCache so repeat lookups for a common
+ * leaves our server. Range responses are cached via DBCache so repeat lookups for a common
  * hash prefix don't re-hit the API.
  */
 class Password
@@ -93,7 +93,7 @@ class Password
 		// The cache lookup itself hits the DB - guard it too, so a DB hiccup fails open
 		// the same way an HIBP outage does, instead of taking down login/signup.
 		try {
-			$result = DataCache::get('Global', 0, "hibp_range_{$prefix}", [
+			$result = DBCache::get('Global', 0, "hibp_range_{$prefix}", [
 				'callable' => [self::class, 'fetch_range'],
 				'args' => [$prefix],
 			]);
@@ -113,11 +113,11 @@ class Password
 
 	/**
 	 * Fetch and parse the k-anonymity hash-suffix range for a SHA-1 prefix from HIBP.
-	 * Called by DataCache::get() as the cache-miss fallback - not intended to be called directly.
+	 * Called by DBCache::get() as the cache-miss fallback - not intended to be called directly.
 	 * @param string $prefix First 5 characters of the uppercase SHA-1 password hash
-	 * @return DataCacheResult|null Data is a [hash_suffix => breach_count] map. Null on failure (nothing gets cached)
+	 * @return DBCacheResult|null Data is a [hash_suffix => breach_count] map. Null on failure (nothing gets cached)
 	 */
-	public static function fetch_range(string $prefix): ?DataCacheResult
+	public static function fetch_range(string $prefix): ?DBCacheResult
 	{
 		try {
 			$http = new Http(self::RANGE_API_BASE_URL);
@@ -142,6 +142,6 @@ class Password
 			}
 		}
 
-		return new DataCacheResult($suffixes, self::CACHE_HOURS, 'json');
+		return new DBCacheResult($suffixes, self::CACHE_HOURS, 'json');
 	}
 }
