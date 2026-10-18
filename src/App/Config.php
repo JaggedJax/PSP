@@ -2,6 +2,8 @@
 
 namespace PSP\App;
 
+use Composer\InstalledVersions;
+
 class Config
 {
 	private static ?Config $instance = null;
@@ -16,11 +18,18 @@ class Config
 	}
 
 	/**
-	 * Find the project root. Inside vendor/ it is the dir that contains vendor/, otherwise the package root
+	 * Find the project root: the Composer root package, else the dir that contains vendor/, else the package root
 	 * @return string
 	 */
 	private static function default_base_dir(): string
 	{
+		// Composer knows the root project, also when this package is symlinked (EG: a path repository)
+		if (class_exists(InstalledVersions::class)) {
+			$root = InstalledVersions::getRootPackage()['install_path'];
+			if ($root !== '') {
+				return rtrim(realpath($root) ?: $root, '/\\').DIRECTORY_SEPARATOR;
+			}
+		}
 		$package_root = dirname(__DIR__, 2);
 		$vendor_pos = strrpos($package_root, DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR);
 		$root = $vendor_pos !== false ? substr($package_root, 0, $vendor_pos) : $package_root;

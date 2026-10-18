@@ -2,7 +2,7 @@
 
 namespace PSP\Cache;
 
-class DataCacheResult
+class DBCacheResult
 {
 	private mixed $data;
 	public int $cache_hours {
@@ -27,14 +27,14 @@ class DataCacheResult
 	}
 	
 	/**
-	 * Create new DataCacheResult object
+	 * Create new DBCacheResult object
 	 * @param mixed $data Whatever data needs to be cached. Usually an array
 	 * @param int $cache_hours # of hours to cache for
-	 * @param string $data_type Data type: One of DataCache::DATA_TYPES
+	 * @param string $data_type Data type: One of DBCache::DATA_TYPES
 	 */
 	public function __construct(mixed $data, int $cache_hours = 24, string $data_type = 'json')
 	{
-		// We don't auto-encode the data here. We'll lazy encode it in DataCache if/when we save it to the DB.
+		// We don't auto-encode the data here. We'll lazy encode it in DBCache if/when we save it to the DB.
 		// This avoids extra unnecessary encodes/decodes
 		$this->data = $data;
 		$this->cache_hours = $cache_hours;
@@ -107,7 +107,7 @@ class DataCacheResult
 	/**
 	 * Decode data for use by caller
 	 * @param string|mixed[] $data
-	 * @param string $data_type One of DataCache::DATA_TYPES
+	 * @param string $data_type One of DBCache::DATA_TYPES
 	 * @return mixed Example, JSON will become an array
 	 */
 	private static function decode_data(mixed $data, string $data_type): mixed
@@ -134,7 +134,7 @@ class DataCacheResult
 	/**
 	 * Encode data for inserting into DB
 	 * @param mixed $data
-	 * @param string $data_type One of DataCache::DATA_TYPES
+	 * @param string $data_type One of DBCache::DATA_TYPES
 	 * @return string
 	 */
 	public static function encode_data(mixed $data, string $data_type): string

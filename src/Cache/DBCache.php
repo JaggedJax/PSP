@@ -6,7 +6,7 @@ use PSP\Db\DB;
 use PSP\Log\Log;
 use PSP\Util\Strings;
 
-class DataCache
+class DBCache
 {
 	/** @var list<string> Allowed cache levels. Add app levels with add_cache_levels() */
 	private static array $cache_levels = ['Global'];
@@ -39,9 +39,9 @@ class DataCache
 	 * @param string $cache_name
 	 * @param array{callable:callable, args:mixed[]} $fallback_function Must pass a callable and list of args to pass to it
 	 * @param int $cache_handling DEFAULT_CACHE, INCLUDE_EXPIRED, FORCE_REFRESH, CACHED_ONLY (Do not perform fallback function), NO_SAVE (Do not save result to cache)
-	 * @return DataCacheResult|null
+	 * @return DBCacheResult|null
 	 */
-	public static function get(string $cache_level, int $pk, string $cache_name, array $fallback_function, int $cache_handling = DataCache::DEFAULT_CACHE): ?DataCacheResult
+	public static function get(string $cache_level, int $pk, string $cache_name, array $fallback_function, int $cache_handling = DBCache::DEFAULT_CACHE): ?DBCacheResult
 	{
 		// Force PK 0 for Global level
 		if ($cache_level == 'Global') {
@@ -54,7 +54,7 @@ class DataCache
 		
 		// Detect invalid cache pk. Raise warning and force cache refresh without saving the result
 		if ($cache_level != 'Global' && $pk == 0) {
-			trigger_error("Call to DataCache::get on invalid $cache_level pk: $pk", E_USER_WARNING);
+			trigger_error("Call to DBCache::get on invalid $cache_level pk: $pk", E_USER_WARNING);
 			$cache_handling = self::FORCE_REFRESH | self::NO_SAVE;
 		}
 		
@@ -74,34 +74,34 @@ class DataCache
 			}
 			
 			try {
-				/** @var DataCacheResult $callable_result */
+				/** @var DBCacheResult $callable_result */
 				$callable_result = call_user_func_array($fallback_function['callable'], $fallback_function['args'] ?? []);
 			}
 			catch (\Exception $e) {
-				Log::warning("DataCache: failed call_user_func_array (".Strings::callable_as_string($fallback_function['callable']).") for {$cache_level}_pk_{$pk} with cache_name $cache_name : " . $e->getMessage());
+				Log::warning("DBCache: failed call_user_func_array (".Strings::callable_as_string($fallback_function['callable']).") for {$cache_level}_pk_{$pk} with cache_name $cache_name : " . $e->getMessage());
 				return null;
 			}
-			if ($callable_result instanceof DataCacheResult) {
+			if ($callable_result instanceof DBCacheResult) {
 				$result = $callable_result;
 				$result->set_last_updated(date('Y-m-d H:i:s'));
 				$result->set_expiration_date(date('Y-m-d H:i:s', time() + ($callable_result->cache_hours * 3600)));
 				
 				if ($cache_handling & self::NO_SAVE) {
-					Log::info("DataCache: NO_SAVE requested for {$cache_level}_pk_{$pk} with cache_name $cache_name");
+					Log::info("DBCache: NO_SAVE requested for {$cache_level}_pk_{$pk} with cache_name $cache_name");
 				}
 				elseif (!self::save($cache_level, $pk, $cache_name, $callable_result)) {
-					Log::warning("DataCache: Failed saving data for {$cache_level}_pk_{$pk} with cache_name $cache_name");
+					Log::warning("DBCache: Failed saving data for {$cache_level}_pk_{$pk} with cache_name $cache_name");
 				}
 			}
 			elseif ($callable_result === null) {
 				if (empty($result)) {
 					// Log lookup failure only if we don't already have the cache loaded
-					$msg = "DataCache: NULL response returned from call_user_func_array (" . Strings::callable_as_string($fallback_function['callable']) . ") for {$cache_level}_pk_{$pk} with cache_name $cache_name";
+					$msg = "DBCache: NULL response returned from call_user_func_array (" . Strings::callable_as_string($fallback_function['callable']) . ") for {$cache_level}_pk_{$pk} with cache_name $cache_name";
 					Log::warning($msg);
 				}
 			}
 			else {
-				$msg = "DataCache: Invalid response returned from call_user_func_array (".Strings::callable_as_string($fallback_function['callable']).") for {$cache_level}_pk_{$pk} with cache_name $cache_name";
+				$msg = "DBCache: Invalid response returned from call_user_func_array (".Strings::callable_as_string($fallback_function['callable']).") for {$cache_level}_pk_{$pk} with cache_name $cache_name";
 				lOG::Error($msg);
 				trigger_error($msg, E_USER_WARNING);
 			}
@@ -115,10 +115,10 @@ class DataCache
 	 * @param string $cache_level Global or a level added with add_cache_levels()
 	 * @param int $pk
 	 * @param string $cache_name
-	 * @param DataCacheResult $cache_object Data to cache
+	 * @param DBCacheResult $cache_object Data to cache
 	 * @return bool Success
 	 */
-	public static function manual_save(string $cache_level, int $pk, string $cache_name, DataCacheResult $cache_object): bool
+	public static function manual_save(string $cache_level, int $pk, string $cache_name, DBCacheResult $cache_object): bool
 	{
 		return self::save($cache_level, $pk, $cache_name, $cache_object);
 	}
@@ -129,9 +129,9 @@ class DataCache
 	 * @param int $pk
 	 * @param string $cache_name
 	 * @param bool $include_expired Should result be returned if it's expired?
-	 * @return DataCacheResult|null
+	 * @return DBCacheResult|null
 	 */
-	private static function load(string $cache_level, int $pk, string $cache_name, bool $include_expired = false): ?DataCacheResult
+	private static function load(string $cache_level, int $pk, string $cache_name, bool $include_expired = false): ?DBCacheResult
 	{
 		if (!in_array($cache_level, self::$cache_levels) || empty($cache_name)) {
 			return null;
@@ -153,7 +153,7 @@ class DataCache
 
 		$time_left_seconds = strtotime($result['expiration_date']) - time();
 		
-		$cache = new DataCacheResult($result['data'], intval(ceil($time_left_seconds / 3600)), $result['data_type']);
+		$cache = new DBCacheResult($result['data'], intval(ceil($time_left_seconds / 3600)), $result['data_type']);
 		$cache->expired = $time_left_seconds < 0;
 		
 		if ($cache->expired && !$include_expired) {
@@ -171,10 +171,10 @@ class DataCache
 	 * @param string $cache_level Global or a level added with add_cache_levels()
 	 * @param int $pk
 	 * @param string $cache_name
-	 * @param DataCacheResult $cache_object Data to cache
+	 * @param DBCacheResult $cache_object Data to cache
 	 * @return bool Success
 	 */
-	private static function save(string $cache_level, int $pk, string $cache_name, DataCacheResult $cache_object): bool
+	private static function save(string $cache_level, int $pk, string $cache_name, DBCacheResult $cache_object): bool
 	{
 		if (!in_array($cache_level, self::$cache_levels)) {
 			Log::warning("Invalid cache level: {$cache_level}");
@@ -190,7 +190,7 @@ class DataCache
 		}
 
 		// Format data for storage
-		$data = DataCacheResult::encode_data($cache_object->get_data(false), $cache_object->data_type);
+		$data = DBCacheResult::encode_data($cache_object->get_data(false), $cache_object->data_type);
 		
 		$result = DB::instance()->insert(
 			'data_cache',

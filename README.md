@@ -26,11 +26,11 @@ You can add app columns to these tables. For example, `jobs.customer_id`.
 | Namespace | Classes |
 |---|---|
 | `PSP\App` | `Config` (JSON config files), `Globals` (process-wide values), `Server` (host, IP, stack trace) |
-| `PSP\Db` | `DB` (PDO wrapper with replica support), `DBTable` (base class for table objects), `DBTableIterator`, `History` (change log), `Dictionary`, `CustomGenerator` |
-| `PSP\Cache` | `MemCache` (Memcached), `DataCache` (DB-backed cache with fallback functions), `RateLimiter` |
+| `PSP\Db` | `DB` (PDO wrapper with replica support), [`DBTable`](docs/db-objects.md) (base class for table objects), `DBTableIterator`, `History` (change log), `Dictionary`, `CustomGenerator` |
+| `PSP\Cache` | `MemCache` (Memcached), [`DBCache`](docs/db-cache.md) (DB-backed cache with fallback functions), `RateLimiter` |
 | `PSP\Log` | `Log` (Monolog JSON logs), `LogTrail` (collect Log IDs for one unit of work), `Telemetry` (OpenTelemetry span tags), `LokiLink` (Grafana links) |
-| `PSP\Http` | `Http` (curl client with retries, OAuth refresh, rate limits), `HttpGraphObj` (GraphQL) |
-| `PSP\Process` | `CLI` (arguments and help), `Lock` (DB locks across servers), `Scheduler` (cron-like job runner) |
+| `PSP\Http` | [`Http`](docs/http.md) (curl client with retries, OAuth refresh, rate limits), `HttpGraphObj` (GraphQL) |
+| `PSP\Process` | `CLI` (arguments and help), `Lock` (DB locks across servers), [`Scheduler`](docs/scheduler.md) (cron-like job runner) |
 | `PSP\Files` | `CSV`, `Ftp`, `Sftp` (needs `phpseclib/phpseclib`) |
 | `PSP\Util` | `Crypt`, `Strings`, `Dates`, `Math`, `Money`, `Html` (HTML sanitizer), `Password` (rules and breach check), `ProfanityFilter` |
 
@@ -74,14 +74,6 @@ If a JSON file exists, environment variables override matching keys. If no JSON 
 | `PSP_GRAFANA_LOKI_DATASOURCE_UID` | `GRAFANA_LOKI_DATASOURCE_UID` | `grafana.loki_datasource_uid` | `loki` |
 | `PSP_GRAFANA_LOKI_SELECTOR` | `GRAFANA_LOKI_SELECTOR` | `grafana.loki_selector` | `{service_name="php"}` |
 
-#### Scheduler (`config/scheduler.json` / `Config::get('scheduler')`)
-
-| Environment Variable | Alias | JSON Key | Example |
-|---|---|---|---|
-| `PSP_SCHEDULER_CONCURRENT_JOB_LIMIT` | `SCHEDULER_CONCURRENT_JOB_LIMIT` | `concurrent_job_limit` | `10` |
-| `PSP_SCHEDULER_NICE` | `SCHEDULER_NICE` | `nice` | `10` |
-| `PSP_SCHEDULER_BRANCH_REPO` | `SCHEDULER_BRANCH_REPO` | `branch_repo` | `git@github.com:...` |
-
 #### HaveIBeenPwned (`Config::get('hibp')`)
 
 | Environment Variable | Alias | JSON Key | Example |
@@ -106,43 +98,65 @@ PSP_CONFIG_DB='{"host":"127.0.0.1:3306","name":"myapp","username":"root","passwo
 
 ## Bootstrap
 
-Set app-specific values once, before other PSP calls:
+Call `Bootstrap::init()` once in every entry point (web front controller and CLI scripts), right after the Composer autoloader:
 
 ```php
-use PSP\App\Config;
-use PSP\App\Server;
-use PSP\Cache\DataCache;
-use PSP\Cache\MemCache;
-use PSP\Db\DBTable;
-use PSP\Db\History;
-use PSP\Log\LogProcessor;
-use PSP\Log\Telemetry;
+use PSP\App\Bootstrap;
 
 require __DIR__ . '/vendor/autoload.php';
 
-// Only needed when the project root is not the dir that contains vendor/
-Config::set_base_dir(__DIR__);
-
-// Specify the namespace of your Database objects. Used for calling DBTable::incoming() w/o needing top specify the full object name w/ the namespace
-DBTable::$_object_namespace = 'MyApp\\Objects\\';
-
-// App IDs to keep as top-level log fields and span attributes
-LogProcessor::add_fields('customer_id');
-Telemetry::add_taggable_ids('customer_id');
-Telemetry::$attribute_prefix = 'myapp';
-
-// Extra DataCache levels. Lock levels are free strings
-DataCache::add_cache_levels('Customer');
-
-// Who made a change, for History entries
-History::set_changed_by_resolver(fn () => isset($_SESSION['user_id']) ? 'user_id:' . $_SESSION['user_id'] : null);
-
-// Proxy headers that hold the client IP. Without this, Server::get_ip() uses REMOTE_ADDR
-Server::trust_ip_headers('HTTP_CF_CONNECTING_IP');
-
-// RateLimiter needs MemCache. Without a connection it allows every request
-MemCache::connect('127.0.0.1');
+Bootstrap::init([
+	'timezone' => 'America/Los_Angeles',
+	'object_namespace' => 'MyApp\\Objects\\',
+	'log_fields' => ['customer_id'],
+	'trace_prefix' => 'myapp',
+	'trusted_ip_headers' => ['HTTP_CF_CONNECTING_IP'],
+	'cache_levels' => ['Customer'],
+	'changed_by' => fn () => isset($_SESSION['user_id']) ? 'user_id:' . $_SESSION['user_id'] : null,
+	'session_lifetime' => 43200,
+	'nonce_header' => 'HTTP_X_CSP_NONCE',
+	'csp' => [
+		'default-src' => ["'self'"],
+		'script-src' => ["'strict-dynamic'", "'nonce-{nonce}'"],
+	],
+	'hsts_max_age' => 31536000,
+]);
 ```
+
+`init()` always:
+- Tags the trace with the environment
+- Connects to Memcached from `psp.json` `memcached` (or the `memcached` option). RateLimiter needs it. Without a connection it allows every request
+- Starts an OpenTelemetry root span for the request or job (not in `local` or unit tests). The SDK is set with the standard `OTEL_*` env vars and is a no-op when off
+- For web requests: sets the process name to `web` and sends the CSP and `Referrer-Policy` headers
+- Registers a shutdown handler for normal exit, SIGTERM and SIGINT. It releases the locks of CLI scripts and logs fatal errors. After a signal the script exits with code 128 + the signal number. Pass `'shutdown_handler' => false` to skip it. The root span still ends at shutdown
+
+| Option | Sets |
+|---|---|
+| `timezone` | `date_default_timezone_set()`. DB connections use the same offset |
+| `object_namespace` | `DBTable::$_object_namespace`, used for short class names in `DBTable::incoming()`. A trailing `\` is added |
+| `log_fields` | App ID fields kept as top-level log fields and tagged on the trace (`Log::add_fields()`) |
+| `trace_prefix` | Prefix of trace attributes (`Telemetry::$attribute_prefix`). Default `app` |
+| `tracer_name` | OpenTelemetry tracer name. Default `psp` |
+| `trusted_ip_headers` | Proxy headers that hold the client IP (`Server::trust_ip_headers()`). Without them, `Server::get_ip()` uses `REMOTE_ADDR` |
+| `cache_levels` | Extra DBCache levels. Lock levels are free strings |
+| `changed_by` | Function that returns who made a change, for History entries |
+| `memcached` | `['server' => ..., 'port' => ...]`. Default: `psp.json` `memcached` |
+| `session_lifetime` | Seconds for `session.gc_maxlifetime`. The session cookie ends with the browser |
+| `nonce_header` | `$_SERVER` key of a request header that can set the CSP nonce, for HTMX partial updates. Only base64 characters, 8 to 128 long, are accepted |
+| `csp` | Content-Security-Policy directives. `{nonce}` is replaced with the request nonce (`Globals::instance()->nonce`) |
+| `referrer_policy` | Default `strict-origin-when-cross-origin` |
+| `hsts_max_age` | Sends `Strict-Transport-Security` outside `dev` and `local` |
+
+To add log fields later, without tagging the trace: `Log::add_fields(['order_id'], trace: false)`.
+
+Only call `Config::set_base_dir()` (before `init()`) when the project root is not the dir that contains `vendor/`.
+
+## Documentation
+
+- [**Scheduler Guide**](docs/scheduler.md): Architecture, setup for `RunQueueJobs` and `RunJobLauncher` daemon, recurring and one-time jobs, and exit codes.
+- [**DB Objects (`DBTable`) Guide**](docs/db-objects.md): Creating active record models with PHP 8.4+ property hooks, relationships, streaming iterators, auto-caching, and auditing.
+- [**DBCache Guide**](docs/db-cache.md): Persistent database-backed caching with fallback callables, custom cache levels, and cache invalidation modes.
+- [**Http Client Guide**](docs/http.md): Persistent cURL client with automated retries, rate limiting (HTTP 429), OAuth 2.0 token refresh, log sanitization, and GraphQL.
 
 ## Development
 

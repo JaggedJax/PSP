@@ -163,4 +163,11 @@ class ConfigTest extends TestCase
 		$this->assertSame('manual.override:3306', $config['host']);
 		$this->assertSame('in_memory_db', $config['name']);
 	}
+
+	public function test_default_base_dir_is_the_composer_root_project(): void
+	{
+		$method = new \ReflectionMethod(Config::class, 'default_base_dir');
+
+		$this->assertSame(realpath(dirname(__DIR__, 2)) . DIRECTORY_SEPARATOR, $method->invoke(null));
+	}
 }

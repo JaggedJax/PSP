@@ -2,8 +2,8 @@
 
 namespace PSP\Tests\Util;
 
-use PSP\Cache\DataCache;
-use PSP\Cache\DataCacheResult;
+use PSP\Cache\DBCache;
+use PSP\Cache\DBCacheResult;
 use PSP\Http\Http;
 use PSP\Util\Password;
 use PHPUnit\Framework\TestCase;
@@ -24,8 +24,8 @@ class PasswordTest extends TestCase
 		$password = 'CorrectHorseBatteryStaple1!';
 		$suffix = substr(strtoupper(sha1($password)), 5);
 
-		redefine(DataCache::class . '::get', function () use ($suffix) {
-			return new DataCacheResult([$suffix => 42], 24, 'json');
+		redefine(DBCache::class . '::get', function () use ($suffix) {
+			return new DBCacheResult([$suffix => 42], 24, 'json');
 		});
 
 		$result = Password::validate_new($password);
@@ -35,8 +35,8 @@ class PasswordTest extends TestCase
 
 	public function testValidateNewAcceptsCleanPassword(): void
 	{
-		redefine(DataCache::class . '::get', function () {
-			return new DataCacheResult([], 24, 'json');
+		redefine(DBCache::class . '::get', function () {
+			return new DBCacheResult([], 24, 'json');
 		});
 
 		$result = Password::validate_new('SomeReasonablySecurePassphrase42!');
@@ -46,7 +46,7 @@ class PasswordTest extends TestCase
 
 	public function testCheckPwnedReturnsNullWhenCacheUnavailable(): void
 	{
-		redefine(DataCache::class . '::get', function () {
+		redefine(DBCache::class . '::get', function () {
 			return null;
 		});
 
@@ -55,8 +55,8 @@ class PasswordTest extends TestCase
 
 	public function testLoginWarningIsNullWhenPasswordClean(): void
 	{
-		redefine(DataCache::class . '::get', function () {
-			return new DataCacheResult([], 24, 'json');
+		redefine(DBCache::class . '::get', function () {
+			return new DBCacheResult([], 24, 'json');
 		});
 
 		$this->assertNull(Password::login_warning('CleanPassword123!'));
@@ -67,8 +67,8 @@ class PasswordTest extends TestCase
 		$password = 'LeakedPassword1!';
 		$suffix = substr(strtoupper(sha1($password)), 5);
 
-		redefine(DataCache::class . '::get', function () use ($suffix) {
-			return new DataCacheResult([$suffix => 5], 24, 'json');
+		redefine(DBCache::class . '::get', function () use ($suffix) {
+			return new DBCacheResult([$suffix => 5], 24, 'json');
 		});
 
 		$warning = Password::login_warning($password);
@@ -83,7 +83,7 @@ class PasswordTest extends TestCase
 		});
 
 		$result = Password::fetch_range('5BAA6');
-		$this->assertInstanceOf(DataCacheResult::class, $result);
+		$this->assertInstanceOf(DBCacheResult::class, $result);
 
 		$data = $result->get_data();
 		$this->assertSame(1, $data['0018A45C4D1DEF81644B54AB7F969B88D65']);
