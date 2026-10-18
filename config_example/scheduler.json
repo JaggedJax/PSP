@@ -1,0 +1,5 @@
+{
+	"concurrent_job_limit": 10,
+	"nice": 10,
+	"branch_repo": ""
+}

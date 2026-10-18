@@ -1,0 +1,12 @@
+includes:
+	- phpstan-baseline.neon
+
+parameters:
+	level: 6
+	phpVersion: 80500
+	treatPhpDocTypesAsCertain: false
+	bootstrapFiles:
+		- vendor/antecedent/patchwork/Patchwork.php
+	paths:
+		- src
+		- tests
