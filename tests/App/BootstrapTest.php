@@ -4,8 +4,13 @@ namespace PSP\Tests\App;
 
 use Monolog\Level;
 use Monolog\LogRecord;
+use OpenTelemetry\API\Trace\SpanInterface;
+use OpenTelemetry\API\Trace\StatusCode;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\RequiresFunction;
 use PHPUnit\Framework\TestCase;
 use PSP\App\Bootstrap;
+use PSP\App\Globals;
 use PSP\App\Server;
 use PSP\Db\DBTable;
 use PSP\Log\Log;
@@ -28,6 +33,7 @@ class BootstrapTest extends TestCase
 		DBTable::$_object_namespace = '';
 		Telemetry::$attribute_prefix = 'app';
 		Server::trust_ip_headers();
+		Globals::instance()->is_cli = true;
 	}
 
 	public function test_apply_settings_sets_the_shared_helpers(): void
@@ -82,5 +88,62 @@ class BootstrapTest extends TestCase
 		$headers = Bootstrap::web_headers(['hsts_max_age' => 31536000, 'referrer_policy' => 'no-referrer'], 'abc123', 'dev');
 
 		$this->assertSame(['Referrer-Policy: no-referrer'], $headers);
+	}
+
+	/**
+	 * @return array<string, array{string}>
+	 */
+	public static function namespaces(): array
+	{
+		return [
+			'no trailing backslash' => ['MyApp\\Objects'],
+			'leading and trailing backslash' => ['\\MyApp\\Objects\\'],
+		];
+	}
+
+	#[DataProvider('namespaces')]
+	public function test_object_namespace_gets_one_trailing_backslash(string $namespace): void
+	{
+		Bootstrap::apply_settings(['object_namespace' => $namespace]);
+
+		$this->assertSame('MyApp\\Objects\\', DBTable::$_object_namespace);
+	}
+
+	public function test_is_valid_nonce_accepts_generated_nonces_only(): void
+	{
+		$this->assertTrue(Bootstrap::is_valid_nonce('4821-aB3dE9fG'));
+		$this->assertTrue(Bootstrap::is_valid_nonce('dGVzdC1ub25jZQ=='));
+
+		$this->assertFalse(Bootstrap::is_valid_nonce("abc12345'; script-src *"));
+		$this->assertFalse(Bootstrap::is_valid_nonce('" onfocus="alert(1)'));
+		$this->assertFalse(Bootstrap::is_valid_nonce('short'));
+		$this->assertFalse(Bootstrap::is_valid_nonce(str_repeat('a', 129)));
+		$this->assertFalse(Bootstrap::is_valid_nonce(null));
+	}
+
+	public function test_end_root_span_records_a_server_error(): void
+	{
+		$span = $this->createMock(SpanInterface::class);
+		$span->expects($this->once())->method('setAttribute')->with('http.response.status_code', 503);
+		$span->expects($this->once())->method('setStatus')->with(StatusCode::STATUS_ERROR);
+		$span->expects($this->once())->method('end');
+
+		(new \ReflectionProperty(Bootstrap::class, 'root_span'))->setValue(null, $span);
+		Globals::instance()->is_cli = false;
+		http_response_code(503);
+
+		Bootstrap::end_root_span();
+
+		$this->assertNull((new \ReflectionProperty(Bootstrap::class, 'root_span'))->getValue());
+	}
+
+	#[RequiresFunction('posix_kill')]
+	#[RequiresFunction('pcntl_signal')]
+	public function test_sigterm_ends_the_script(): void
+	{
+		exec(escapeshellarg(PHP_BINARY) . ' ' . escapeshellarg(__DIR__ . '/fixtures/signal_exit.php') . ' 2>&1', $output, $exit_code);
+
+		$this->assertSame(128 + SIGTERM, $exit_code, implode("\n", $output));
+		$this->assertStringNotContainsString('still running', implode("\n", $output));
 	}
 }

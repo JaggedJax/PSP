@@ -136,12 +136,12 @@ Bootstrap::init([
 - Connects to Memcached from `psp.json` `memcached` (or the `memcached` option). RateLimiter needs it. Without a connection it allows every request
 - Starts an OpenTelemetry root span for the request or job (not in `local` or unit tests). The SDK is set with the standard `OTEL_*` env vars and is a no-op when off
 - For web requests: sets the process name to `web` and sends the CSP and `Referrer-Policy` headers
-- Registers a shutdown handler for normal exit, SIGTERM and SIGINT. It releases the locks of CLI scripts and logs fatal errors. Pass `'shutdown_handler' => false` to skip it
+- Registers a shutdown handler for normal exit, SIGTERM and SIGINT. It releases the locks of CLI scripts and logs fatal errors. After a signal the script exits with code 128 + the signal number. Pass `'shutdown_handler' => false` to skip it. The root span still ends at shutdown
 
 | Option | Sets |
 |---|---|
 | `timezone` | `date_default_timezone_set()`. DB connections use the same offset |
-| `object_namespace` | `DBTable::$_object_namespace`, used for short class names in `DBTable::incoming()` |
+| `object_namespace` | `DBTable::$_object_namespace`, used for short class names in `DBTable::incoming()`. A trailing `\` is added |
 | `log_fields` | App ID fields kept as top-level log fields and tagged on the trace (`Log::add_fields()`) |
 | `trace_prefix` | Prefix of trace attributes (`Telemetry::$attribute_prefix`). Default `app` |
 | `tracer_name` | OpenTelemetry tracer name. Default `psp` |
@@ -150,7 +150,7 @@ Bootstrap::init([
 | `changed_by` | Function that returns who made a change, for History entries |
 | `memcached` | `['server' => ..., 'port' => ...]`. Default: `psp.json` `memcached` |
 | `session_lifetime` | Seconds for `session.gc_maxlifetime`. The session cookie ends with the browser |
-| `nonce_header` | `$_SERVER` key of a request header that can set the CSP nonce, for HTMX partial updates |
+| `nonce_header` | `$_SERVER` key of a request header that can set the CSP nonce, for HTMX partial updates. Only base64 characters, 8 to 128 long, are accepted |
 | `csp` | Content-Security-Policy directives. `{nonce}` is replaced with the request nonce (`Globals::instance()->nonce`) |
 | `referrer_policy` | Default `strict-origin-when-cross-origin` |
 | `hsts_max_age` | Sends `Strict-Transport-Security` outside `dev` and `local` |

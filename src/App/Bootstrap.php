@@ -22,7 +22,10 @@ use PSP\Process\Lock;
 class Bootstrap
 {
 	/** Fatal error types that end the script */
-	private const array FATAL_ERRORS = [E_ERROR, E_CORE_ERROR, E_PARSE];
+	private const array FATAL_ERRORS = [E_ERROR, E_CORE_ERROR, E_COMPILE_ERROR, E_PARSE, E_USER_ERROR];
+
+	/** Characters allowed in a CSP nonce from a request header (base64 and base64url) */
+	private const string NONCE_PATTERN = '/^[A-Za-z0-9+\/=_-]{8,128}$/';
 
 	private static ?SpanInterface $root_span = null;
 	private static ?ScopeInterface $root_scope = null;
@@ -57,7 +60,6 @@ class Bootstrap
 		}
 
 		self::apply_settings($options);
-		Telemetry::tag('environment', $globals->environment);
 
 		if (!$globals->is_unit_test) {
 			$memcached = $options['memcached'] ?? Config::get('psp')['memcached'] ?? null;
@@ -68,6 +70,7 @@ class Bootstrap
 
 		if (!$globals->is_unit_test && $globals->environment !== 'local') {
 			self::start_root_span($options['tracer_name'] ?? 'psp');
+			Telemetry::tag('environment', $globals->environment);
 		}
 
 		if (!$globals->is_cli) {
@@ -76,6 +79,10 @@ class Bootstrap
 
 		if (!$globals->is_unit_test && ($options['shutdown_handler'] ?? true)) {
 			self::register_shutdown();
+		}
+		// Registered last so it runs after shutdown(), and the shutdown logs are in the trace
+		if (self::$root_span !== null) {
+			register_shutdown_function([self::class, 'end_root_span']);
 		}
 	}
 
@@ -86,7 +93,8 @@ class Bootstrap
 	public static function apply_settings(array $options): void
 	{
 		if (isset($options['object_namespace'])) {
-			DBTable::$_object_namespace = $options['object_namespace'];
+			$namespace = trim($options['object_namespace'], '\\');
+			DBTable::$_object_namespace = $namespace !== '' ? $namespace . '\\' : '';
 		}
 		if (isset($options['trace_prefix'])) {
 			Telemetry::$attribute_prefix = $options['trace_prefix'];
@@ -131,23 +139,35 @@ class Bootstrap
 	}
 
 	/**
-	 * End the process cleanly: release CLI locks and log a fatal error. Runs at shutdown and on SIGTERM/SIGINT
+	 * End the process cleanly: release CLI locks and log a fatal error. Runs at shutdown, and on SIGTERM/SIGINT it then exits
 	 * @param int|string $signo Signal number, or "exit" for a normal shutdown
 	 */
 	public static function shutdown(int|string $signo = 'exit'): void
 	{
 		$globals = Globals::instance();
-		Log::debug('DB Queries used: ' . $globals->num_db_calls);
-		if ($globals->in_shutdown) {
-			return;
+		if (!$globals->in_shutdown) {
+			$globals->in_shutdown = true;
+			Log::debug('DB Queries used: ' . $globals->num_db_calls);
+			self::release_and_report();
 		}
-		$globals->in_shutdown = true;
 
+		// A signal handler that returns lets the script keep running after its locks are released
+		if (is_int($signo)) {
+			exit(128 + $signo);
+		}
+	}
+
+	/**
+	 * Release the locks of a CLI script and log a fatal error. Called once by shutdown()
+	 */
+	private static function release_and_report(): void
+	{
+		$globals = Globals::instance();
 		if ($globals->is_cli) {
 			try {
 				(new Lock('shutdown', Lock::Global))->release_all();
 			}
-			catch (\Exception) {
+			catch (\Throwable) {
 			}
 		}
 
@@ -170,7 +190,7 @@ class Bootstrap
 		$builder = OtelGlobals::tracerProvider()->getTracer($tracer_name)->spanBuilder(
 			$globals->is_cli
 				? 'job ' . $globals->process_name
-				: ($_SERVER['REQUEST_METHOD'] ?? 'GET') . ' ' . strtok($_SERVER['REQUEST_URI'] ?? '/', '?')
+				: ($_SERVER['REQUEST_METHOD'] ?? 'GET') . ' ' . self::request_path()
 		);
 		if ($globals->is_cli) {
 			$builder
@@ -183,10 +203,10 @@ class Bootstrap
 		}
 		else {
 			$builder
-				->setParent(TraceContextPropagator::getInstance()->extract(getallheaders() ?: []))
+				->setParent(TraceContextPropagator::getInstance()->extract(function_exists('getallheaders') ? (getallheaders() ?: []) : []))
 				->setSpanKind(SpanKind::KIND_SERVER)
 				->setAttribute('http.request.method', $_SERVER['REQUEST_METHOD'] ?? 'GET')
-				->setAttribute('url.path', strtok($_SERVER['REQUEST_URI'] ?? '/', '?'))
+				->setAttribute('url.path', self::request_path())
 				->setAttribute('server.address', $_SERVER['HTTP_HOST'] ?? '');
 		}
 		self::$root_span = $builder->startSpan();
@@ -209,7 +229,7 @@ class Bootstrap
 		}
 
 		// HTMX partial updates send the nonce of the first page load, so their scripts match the page CSP
-		if (!empty($options['nonce_header']) && !empty($_SERVER[$options['nonce_header']])) {
+		if (!empty($options['nonce_header']) && self::is_valid_nonce($_SERVER[$options['nonce_header']] ?? null)) {
 			$globals->nonce = (string)$_SERVER[$options['nonce_header']];
 		}
 
@@ -219,7 +239,27 @@ class Bootstrap
 	}
 
 	/**
-	 * Register shutdown() for normal exit and SIGTERM/SIGINT, then the root span end. The span ends last so shutdown logs are in the trace
+	 * Is this a safe CSP nonce from a request header? It goes into the CSP header and HTML attributes, so only base64 characters are allowed
+	 * @param mixed $nonce
+	 * @return bool
+	 */
+	public static function is_valid_nonce(mixed $nonce): bool
+	{
+		return is_string($nonce) && preg_match(self::NONCE_PATTERN, $nonce) === 1;
+	}
+
+	/**
+	 * Path of the web request without the query string
+	 * @return string
+	 */
+	private static function request_path(): string
+	{
+		$path = strtok((string)($_SERVER['REQUEST_URI'] ?? ''), '?');
+		return $path !== false ? $path : '/';
+	}
+
+	/**
+	 * Register shutdown() for normal exit and SIGTERM/SIGINT
 	 */
 	private static function register_shutdown(): void
 	{
@@ -230,10 +270,6 @@ class Bootstrap
 			pcntl_signal(SIGINT, [self::class, 'shutdown']);
 		}
 		register_shutdown_function([self::class, 'shutdown'], 'exit');
-
-		if (self::$root_span !== null) {
-			register_shutdown_function([self::class, 'end_root_span']);
-		}
 	}
 
 	/**
