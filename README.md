@@ -62,7 +62,7 @@ require __DIR__ . '/vendor/autoload.php';
 // Only needed when the project root is not the dir that contains vendor/
 Config::set_base_dir(__DIR__);
 
-// Namespace for short class names passed to DBTable::incoming()
+// Specify the namespace of your Database objects. Used for calling DBTable::incoming() w/o needing top specify the full object name w/ the namespace
 DBTable::$_object_namespace = 'MyApp\\Objects\\';
 
 // App IDs to keep as top-level log fields and span attributes
