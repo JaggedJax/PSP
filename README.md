@@ -36,13 +36,73 @@ You can add app columns to these tables. For example, `jobs.customer_id`.
 
 ## Config
 
-PSP reads JSON files from the `config/` dir of your project. See `config_example/`.
+Settings can be defined in JSON files in the `config/` dir, via environment variables, or programmatically via `Config::set()`.
 
-- `psp.json`: `name`, `environment` (local, dev, stage, prod), `domain`, `log_dir`, `grafana`
-- `db.json`: `host`, `replica_host`, `name`, `username`, `password`
-- `scheduler.json`: `concurrent_job_limit`, `nice`, `branch_repo`
+### Precedence
 
-Logs go to stderr when `log_dir` is not set.
+1. **In-memory**: `Config::set('db', [...])` (highest, useful for tests and runtime bootstrapping)
+2. **Specific PSP environment variables**: `PSP_DB_PASSWORD`, `PSP_NAME`, etc.
+3. **Standard environment aliases**: `DB_HOST`, `DB_PASSWORD`, `APP_ENV`, etc.
+4. **Full JSON payload env var**: `PSP_CONFIG_{TYPE}` or `PSP_{TYPE}_JSON`
+5. **JSON file**: `config/{type}.json` (lowest, baseline defaults)
+
+If a JSON file exists, environment variables override matching keys. If no JSON file exists, configuration can be driven entirely by environment variables.
+
+### Common Environment Variables
+
+#### Database (`config/db.json` / `Config::get('db')`)
+
+| Environment Variable | Alias | JSON Key | Example |
+|---|---|---|---|
+| `PSP_DB_HOST` | `DB_HOST` | `host` | `127.0.0.1:3306` |
+| `PSP_DB_REPLICA_HOST` | `DB_REPLICA_HOST` | `replica_host` | `127.0.0.1:3306` |
+| `PSP_DB_NAME` | `DB_NAME`, `DB_DATABASE` | `name` | `myapp` |
+| `PSP_DB_USERNAME` | `DB_USERNAME`, `DB_USER`, `PSP_DB_USER` | `username` | `myapp` |
+| `PSP_DB_PASSWORD` | `DB_PASSWORD` | `password` | `secret` |
+
+#### App & Telemetry (`config/psp.json` / `Config::get('psp')`)
+
+| Environment Variable | Alias | JSON Key | Example |
+|---|---|---|---|
+| `PSP_NAME` | `APP_NAME` | `name` | `MyApp` |
+| `PSP_ENVIRONMENT` | `PSP_ENV`, `APP_ENV`, `ENVIRONMENT` | `environment` | `prod` (local, dev, stage, prod) |
+| `PSP_DOMAIN` | `APP_DOMAIN` | `domain` | `example.com` |
+| `PSP_LOG_DIR` | `LOG_DIR` | `log_dir` | `/var/log/myapp` (defaults to `php://stderr`) |
+| `PSP_MEMCACHED_SERVER` | `MEMCACHED_SERVER`, `MEMCACHED_HOST` | `memcached.server` | `127.0.0.1` |
+| `PSP_MEMCACHED_PORT` | `MEMCACHED_PORT` | `memcached.port` | `11211` |
+| `PSP_GRAFANA_URL` | `GRAFANA_URL` | `grafana.url` | `http://localhost:3000` |
+| `PSP_GRAFANA_LOKI_DATASOURCE_UID` | `GRAFANA_LOKI_DATASOURCE_UID` | `grafana.loki_datasource_uid` | `loki` |
+| `PSP_GRAFANA_LOKI_SELECTOR` | `GRAFANA_LOKI_SELECTOR` | `grafana.loki_selector` | `{service_name="php"}` |
+
+#### Scheduler (`config/scheduler.json` / `Config::get('scheduler')`)
+
+| Environment Variable | Alias | JSON Key | Example |
+|---|---|---|---|
+| `PSP_SCHEDULER_CONCURRENT_JOB_LIMIT` | `SCHEDULER_CONCURRENT_JOB_LIMIT` | `concurrent_job_limit` | `10` |
+| `PSP_SCHEDULER_NICE` | `SCHEDULER_NICE` | `nice` | `10` |
+| `PSP_SCHEDULER_BRANCH_REPO` | `SCHEDULER_BRANCH_REPO` | `branch_repo` | `git@github.com:...` |
+
+#### HaveIBeenPwned (`Config::get('hibp')`)
+
+| Environment Variable | Alias | JSON Key | Example |
+|---|---|---|---|
+| `PSP_HIBP_ENABLED` | `HIBP_ENABLED` | `enabled` | `true` / `false` |
+
+### Custom & Nested Configuration
+
+For custom config files or arbitrary keys (e.g. `Config::get('payment')`), set env vars using the `PSP_{CONFIG}_{KEY}` convention. Use double underscores (`__`) to denote nested array paths:
+
+```bash
+PSP_PAYMENT_API_KEY="sk_live_12345"
+PSP_PAYMENT_WEBHOOK__SECRET="whsec_67890"
+```
+
+To provide an entire config type as a JSON payload (useful for Kubernetes or cloud secrets managers):
+
+```bash
+PSP_CONFIG_DB='{"host":"127.0.0.1:3306","name":"myapp","username":"root","password":"secret"}'
+```
+
 
 ## Bootstrap
 
