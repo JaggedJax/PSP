@@ -56,4 +56,24 @@ class HttpTest extends TestCase
 
 		$this->assertSame([401, 403], $params['refresh_http_status']);
 	}
+
+	public function testStripHeadersHidesAuthorizationByDefault(): void
+	{
+		$headers = Http::strip_headers([
+			'Authorization: Bearer abc',
+			'authorization: Basic xyz',
+			'Cookie: session=1',
+			'X-Api-Key: secret',
+			'Content-Type: application/json',
+		], ['x-API-key']);
+
+		$this->assertSame([
+			'Authorization: **REMOVED**',
+			'authorization: **REMOVED**',
+			'Cookie: **REMOVED**',
+			'X-Api-Key: **REMOVED**',
+			'Content-Type: application/json',
+		], $headers);
+	}
+
 }
