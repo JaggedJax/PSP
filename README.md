@@ -170,6 +170,17 @@ composer cs
 
 `composer test:db` runs the Database suite. It needs a MySQL database with `db/schema.sql` loaded. Connection settings are in `tests/config/db.json`.
 
+## Contributions & AI
+
+This project is designed to make spinning up new PHP projects quick and easy for me, with common reusable components. It is not intended to solve every problem.
+
+Contributions are welcome as long as they keep to the style of this repository and are not specific to your application.
+I am publishing this primarily for myself and not looking to create another job for myself, so please be clear and patient with any requests.
+If you don't like the directions or decisions I make, you are encouraged to fork and expand upon this work.
+If you find this project too limiting, you can take the code as a starting point and personalize it from there.
+
+This project was initially handwritten and then improved with the help of AI. AI-generated code is allowed, however quality and readability are the most important factors
+
 ## License
 
 This project is licensed under the Mozilla Public License 2.0 - see the [LICENSE](LICENSE) file for details.
