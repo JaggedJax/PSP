@@ -1,0 +1,15 @@
+{
+	"name": "MyApp",
+	"environment": "dev",
+	"domain": "example.com",
+	"log_dir": "/var/log/myapp",
+	"memcached": {
+		"server": "127.0.0.1",
+		"port": 11211
+	},
+	"grafana": {
+		"url": "http://localhost:3000",
+		"loki_datasource_uid": "loki",
+		"loki_selector": "{service_name=\"php\"}"
+	}
+}

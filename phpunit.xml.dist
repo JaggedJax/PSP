@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit
+		bootstrap="tests/bootstrap.php"
+		colors="true"
+		cacheDirectory="./local/.phpunit.cache"
+		stopOnFailure="false"
+		displayDetailsOnTestsThatTriggerDeprecations="true"
+>
+	<testsuites>
+		<testsuite name="Unit">
+			<directory>./tests</directory>
+			<!-- In the Database suite -->
+			<exclude>./tests/Process/SchedulerIntegrationTest.php</exclude>
+			<exclude>./tests/Process/SchedulerTest.php</exclude>
+		</testsuite>
+		<testsuite name="Database">
+			<file>./tests/Process/SchedulerIntegrationTest.php</file>
+			<file>./tests/Process/SchedulerTest.php</file>
+		</testsuite>
+	</testsuites>
+
+	<source>
+		<include>
+			<directory suffix=".php">src</directory>
+		</include>
+	</source>
+
+	<extensions>
+		<bootstrap class="PSP\Tests\Extensions\GlobalMocksExtension"/>
+	</extensions>
+</phpunit>

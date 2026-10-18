@@ -1,5 +1,4 @@
-# Composer
 /vendor/
-
-#PHPUnit
-/tests/test_results/
+/local/
+/composer.lock
+.phpunit.result.cache

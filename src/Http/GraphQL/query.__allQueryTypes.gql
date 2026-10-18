@@ -1,0 +1,11 @@
+# Pulls a list of all available queries
+query {
+	__schema {
+		queryType {
+			fields {
+				name
+				description
+			}
+		}
+	}
+}
