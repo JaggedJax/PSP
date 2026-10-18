@@ -2,6 +2,7 @@
 	"name": "jaggedjax/psp",
 	"description": "PHP Starter Project - Lightweight common utilities to help you get going",
 	"type": "library",
+	"license": "MPL-2.0",
 	"require": {
 		"php": ">=8.1.0"
 	},

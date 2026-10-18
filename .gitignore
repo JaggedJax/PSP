@@ -1,5 +1,11 @@
 # Composer
 /vendor/
+/composer.lock
 
 #PHPUnit
 /tests/test_results/
+.phpunit.result.cache
+
+#Other
+/local/
+.idea
