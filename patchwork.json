@@ -1,0 +1,9 @@
+{
+	"redefinable-internals": [
+		"getopt",
+		"password_hash",
+		"password_needs_rehash",
+		"sleep",
+		"usleep"
+	]
+}

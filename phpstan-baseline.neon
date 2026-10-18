@@ -1,0 +1,1087 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Method PSP\\Db\\DB\:\:call_stored_procedure\(\) has parameter \$input with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Db/DB.php
+
+		-
+			message: '#^Method PSP\\Db\\DB\:\:delete\(\) has parameter \$arr_where_parameters with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Db/DB.php
+
+		-
+			message: '#^Method PSP\\Db\\DB\:\:get_enum_values\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Db/DB.php
+
+		-
+			message: '#^Method PSP\\Db\\DB\:\:get_error\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/Db/DB.php
+
+		-
+			message: '#^Method PSP\\Db\\DB\:\:insert\(\) has parameter \$arr_parameters with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Db/DB.php
+
+		-
+			message: '#^Method PSP\\Db\\DB\:\:insert\(\) has parameter \$on_dup_update_key with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Db/DB.php
+
+		-
+			message: '#^Method PSP\\Db\\DB\:\:log_mysql_error\(\) has parameter \$arr_parameters with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Db/DB.php
+
+		-
+			message: '#^Method PSP\\Db\\DB\:\:run_named_query\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Db/DB.php
+
+		-
+			message: '#^Method PSP\\Db\\DB\:\:run_static_query\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Db/DB.php
+
+		-
+			message: '#^Method PSP\\Db\\DB\:\:run_unnamed_query\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Db/DB.php
+
+		-
+			message: '#^Method PSP\\Db\\DB\:\:update\(\) has parameter \$arr_update_parameters with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Db/DB.php
+
+		-
+			message: '#^Method PSP\\Db\\DB\:\:update\(\) has parameter \$arr_where_parameters with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Db/DB.php
+
+		-
+			message: '#^Method PSP\\Db\\DBTable\:\:clear_where_cache\(\) has parameter \$orderby with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Db/DBTable.php
+
+		-
+			message: '#^Method PSP\\Db\\DBTable\:\:get_load_columns\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Db/DBTable.php
+
+		-
+			message: '#^Method PSP\\Db\\DBTable\:\:get_query_cache_key\(\) has parameter \$orderby with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Db/DBTable.php
+
+		-
+			message: '#^Method PSP\\Db\\DBTable\:\:incoming\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Db/DBTable.php
+
+		-
+			message: '#^Method PSP\\Db\\DBTable\:\:incoming\(\) return type has no value type specified in iterable type array\|PSP\\Db\\DBTableIterator\<T of PSP\\Db\\DBTable\>\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Db/DBTable.php
+
+		-
+			message: '#^Method PSP\\Db\\DBTable\:\:load_from_pk\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Db/DBTable.php
+
+		-
+			message: '#^Method PSP\\Db\\DBTable\:\:load_from_pks\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Db/DBTable.php
+
+		-
+			message: '#^Method PSP\\Db\\DBTable\:\:populate_from_array\(\) should return static\(PSP\\Db\\DBTable\<D of PSP\\Db\\DBTable\>\)\|null but returns static\(PSP\\Db\\DBTable\<PSP\\Db\\DBTable\>\)\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Db/DBTable.php
+
+		-
+			message: '#^Method PSP\\Db\\DBTable\:\:save\(\) has parameter \$on_dup_update_key with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Db/DBTable.php
+
+		-
+			message: '#^Method PSP\\Db\\DBTable\:\:select_one\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Db/DBTable.php
+
+		-
+			message: '#^Method PSP\\Db\\DBTable\:\:set_fk_id\(\) has parameter \$validation with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Db/DBTable.php
+
+		-
+			message: '#^Method PSP\\Db\\DBTable\:\:sync_linked_fk\(\) has parameter \$value with generic class PSP\\Db\\DBTable but does not specify its types\: D$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Db/DBTable.php
+
+		-
+			message: '#^Method PSP\\Db\\DBTable\:\:sync_linked_fk\(\) return type with generic class PSP\\Db\\DBTable does not specify its types\: D$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Db/DBTable.php
+
+		-
+			message: '#^Method PSP\\Db\\DBTable\:\:to_array\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Db/DBTable.php
+
+		-
+			message: '#^Offset ''true'' on array\{true\: string\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: src/Db/DBTable.php
+
+		-
+			message: '#^PHPDoc tag @var for variable \$type contains generic class PSP\\Db\\DBTable but does not specify its types\: D$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Db/DBTable.php
+
+		-
+			message: '#^Method PSP\\Db\\DBTableIterator\:\:current\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Db/DBTableIterator.php
+
+		-
+			message: '#^Property PSP\\Db\\DBTableIterator\:\:\$current_item type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Db/DBTableIterator.php
+
+		-
+			message: '#^Property PSP\\Db\\DBTableIterator\:\:\$reverse_buffer type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Db/DBTableIterator.php
+
+		-
+			message: '#^Property PSP\\Db\\DBTableIterator\:\:\$where type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Db/DBTableIterator.php
+
+		-
+			message: '#^Method PSP\\Db\\History\:\:build_row\(\) has parameter \$new_val with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Db/History.php
+
+		-
+			message: '#^Method PSP\\Db\\History\:\:build_row\(\) has parameter \$old_val with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Db/History.php
+
+		-
+			message: '#^Method PSP\\Db\\History\:\:new_entry\(\) has parameter \$new_val with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Db/History.php
+
+		-
+			message: '#^Method PSP\\Db\\History\:\:new_entry\(\) has parameter \$old_val with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Db/History.php
+
+		-
+			message: '#^Property PSP\\Files\\Ftp\:\:\$connection has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: src/Files/Ftp.php
+
+		-
+			message: '#^Method PSP\\Http\\Http\:\:__construct\(\) has parameter \$global_curl_params with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Method PSP\\Http\\Http\:\:build_parameters_query\(\) has parameter \$url_params with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Method PSP\\Http\\Http\:\:change_base_url\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Method PSP\\Http\\Http\:\:change_base_url_once\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Method PSP\\Http\\Http\:\:custom_error_checker\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Method PSP\\Http\\Http\:\:custom_error_checker\(\) has parameter \$addtl_params with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Method PSP\\Http\\Http\:\:custom_param_builder\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Method PSP\\Http\\Http\:\:custom_post_builder\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Method PSP\\Http\\Http\:\:custom_post_builder\(\) has parameter \$addtl_params with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Method PSP\\Http\\Http\:\:custom_response_parser\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Method PSP\\Http\\Http\:\:custom_response_parser\(\) has parameter \$addtl_params with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Method PSP\\Http\\Http\:\:default_error_checker\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Method PSP\\Http\\Http\:\:default_error_checker\(\) has parameter \$response with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Method PSP\\Http\\Http\:\:delete\(\) has parameter \$header with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Method PSP\\Http\\Http\:\:delete\(\) has parameter \$post_data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Method PSP\\Http\\Http\:\:delete\(\) has parameter \$url_params with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Method PSP\\Http\\Http\:\:download_file\(\) has parameter \$headers with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Method PSP\\Http\\Http\:\:get\(\) has parameter \$header with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Method PSP\\Http\\Http\:\:get\(\) has parameter \$url_params with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Method PSP\\Http\\Http\:\:get_custom_post_builder\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Method PSP\\Http\\Http\:\:get_global_headers\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Method PSP\\Http\\Http\:\:get_request_headers\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Method PSP\\Http\\Http\:\:get_response_headers\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Method PSP\\Http\\Http\:\:header_convert\(\) has parameter \$assoc_headers with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Method PSP\\Http\\Http\:\:header_convert\(\) has parameter \$strip_headers with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Method PSP\\Http\\Http\:\:header_convert\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Method PSP\\Http\\Http\:\:make_curl_call\(\) has parameter \$header with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Method PSP\\Http\\Http\:\:make_curl_call\(\) has parameter \$post_data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Method PSP\\Http\\Http\:\:make_curl_call\(\) has parameter \$url_params with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Method PSP\\Http\\Http\:\:oauth_refresh_setup\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Method PSP\\Http\\Http\:\:oauth_refresh_setup\(\) has parameter \$function_params with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Method PSP\\Http\\Http\:\:parse_link_header\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Method PSP\\Http\\Http\:\:patch\(\) has parameter \$header with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Method PSP\\Http\\Http\:\:patch\(\) has parameter \$post_data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Method PSP\\Http\\Http\:\:patch\(\) has parameter \$url_params with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Method PSP\\Http\\Http\:\:post\(\) has parameter \$header with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Method PSP\\Http\\Http\:\:post\(\) has parameter \$post_data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Method PSP\\Http\\Http\:\:post\(\) has parameter \$url_params with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Method PSP\\Http\\Http\:\:pre_call\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Method PSP\\Http\\Http\:\:pre_call\(\) has parameter \$header with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Method PSP\\Http\\Http\:\:pre_call\(\) has parameter \$post_data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Method PSP\\Http\\Http\:\:pre_call\(\) has parameter \$url_params with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Method PSP\\Http\\Http\:\:put\(\) has parameter \$header with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Method PSP\\Http\\Http\:\:put\(\) has parameter \$post_data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Method PSP\\Http\\Http\:\:put\(\) has parameter \$url_params with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Method PSP\\Http\\Http\:\:query\(\) has parameter \$header with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Method PSP\\Http\\Http\:\:query\(\) has parameter \$url_params with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Method PSP\\Http\\Http\:\:random_header\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Method PSP\\Http\\Http\:\:set_auto_retry_sleep_time\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Method PSP\\Http\\Http\:\:set_curl_params\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Method PSP\\Http\\Http\:\:set_curl_params\(\) has parameter \$curl_params with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Method PSP\\Http\\Http\:\:set_endpoint_param_separator\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Method PSP\\Http\\Http\:\:set_global_get_params\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Method PSP\\Http\\Http\:\:set_global_get_params\(\) has parameter \$params with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Method PSP\\Http\\Http\:\:set_global_headers\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Method PSP\\Http\\Http\:\:set_http_rate_limit_code\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Method PSP\\Http\\Http\:\:set_http_rate_limit_sleep\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Method PSP\\Http\\Http\:\:set_num_auto_retries\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Method PSP\\Http\\Http\:\:strip_credentials\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Method PSP\\Http\\Http\:\:update_oauth_header\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Method PSP\\Http\\Http\:\:update_oauth_header_once\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Property PSP\\Http\\Http\:\:\$auto_retry_sleep has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Property PSP\\Http\\Http\:\:\$base_url has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Property PSP\\Http\\Http\:\:\$ch has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Property PSP\\Http\\Http\:\:\$current_url has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Property PSP\\Http\\Http\:\:\$endpoint_param_separator has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Property PSP\\Http\\Http\:\:\$global_get_params has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Property PSP\\Http\\Http\:\:\$global_headers has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Property PSP\\Http\\Http\:\:\$json has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Property PSP\\Http\\Http\:\:\$last_curl_error has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Property PSP\\Http\\Http\:\:\$last_graphql_type has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Property PSP\\Http\\Http\:\:\$last_headers_sent has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Property PSP\\Http\\Http\:\:\$last_log_id has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Property PSP\\Http\\Http\:\:\$last_request has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Property PSP\\Http\\Http\:\:\$last_request_type has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Property PSP\\Http\\Http\:\:\$last_response has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Property PSP\\Http\\Http\:\:\$num_auto_retries has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Property PSP\\Http\\Http\:\:\$oauth_refresh_params has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Property PSP\\Http\\Http\:\:\$param_builder_func type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Property PSP\\Http\\Http\:\:\$param_builder_func_params type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Property PSP\\Http\\Http\:\:\$parse_response_func has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Property PSP\\Http\\Http\:\:\$parse_response_func_params has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Property PSP\\Http\\Http\:\:\$post_builder_func has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Property PSP\\Http\\Http\:\:\$post_builder_func_params has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Property PSP\\Http\\Http\:\:\$rand_header_func has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Property PSP\\Http\\Http\:\:\$rand_header_name has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Property PSP\\Http\\Http\:\:\$rand_header_params has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Property PSP\\Http\\Http\:\:\$rate_limit_http_code has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Property PSP\\Http\\Http\:\:\$rate_limit_sleep has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Property PSP\\Http\\Http\:\:\$response_error_check_func has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Property PSP\\Http\\Http\:\:\$response_error_check_func_params has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Property PSP\\Http\\Http\:\:\$response_headers type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Property PSP\\Http\\Http\:\:\$strip_credentials has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Property PSP\\Http\\Http\:\:\$temp_base_url has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Property PSP\\Http\\Http\:\:\$temp_oauth_header has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: src/Http/Http.php
+
+		-
+			message: '#^Method PSP\\Http\\HttpException\:\:__construct\(\) has parameter \$error_data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Http/HttpException.php
+
+		-
+			message: '#^Method PSP\\Http\\HttpException\:\:__construct\(\) has parameter \$log_id with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Http/HttpException.php
+
+		-
+			message: '#^Property PSP\\Http\\HttpException\:\:\$auth_expired has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: src/Http/HttpException.php
+
+		-
+			message: '#^Property PSP\\Http\\HttpException\:\:\$error_data has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: src/Http/HttpException.php
+
+		-
+			message: '#^Property PSP\\Http\\HttpException\:\:\$log_id has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: src/Http/HttpException.php
+
+		-
+			message: '#^Method PSP\\Http\\HttpGraphObj\:\:add_query\(\) has parameter \$args with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Http/HttpGraphObj.php
+
+		-
+			message: '#^Method PSP\\Http\\HttpGraphObj\:\:add_query\(\) has parameter \$return_fields with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Http/HttpGraphObj.php
+
+		-
+			message: '#^Method PSP\\Http\\HttpGraphObj\:\:add_variables\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/Http/HttpGraphObj.php
+
+		-
+			message: '#^Method PSP\\Http\\HttpGraphObj\:\:add_variables\(\) has parameter \$variables with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Http/HttpGraphObj.php
+
+		-
+			message: '#^Method PSP\\Http\\HttpGraphObj\:\:build_arguments\(\) has parameter \$args with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Http/HttpGraphObj.php
+
+		-
+			message: '#^Method PSP\\Http\\HttpGraphObj\:\:build_query_object\(\) has parameter \$args with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Http/HttpGraphObj.php
+
+		-
+			message: '#^Method PSP\\Http\\HttpGraphObj\:\:build_query_object\(\) has parameter \$return_fields with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Http/HttpGraphObj.php
+
+		-
+			message: '#^Method PSP\\Http\\HttpGraphObj\:\:build_return_fields\(\) has parameter \$fields with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Http/HttpGraphObj.php
+
+		-
+			message: '#^Method PSP\\Http\\HttpGraphObj\:\:get_variables\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Http/HttpGraphObj.php
+
+		-
+			message: '#^Method PSP\\Http\\HttpGraphObj\:\:is_keyed\(\) has parameter \$arr with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Http/HttpGraphObj.php
+
+		-
+			message: '#^Method PSP\\Http\\HttpGraphObj\:\:validate_alias\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/Http/HttpGraphObj.php
+
+		-
+			message: '#^Property PSP\\Http\\HttpGraphObj\:\:\$fragments has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: src/Http/HttpGraphObj.php
+
+		-
+			message: '#^Property PSP\\Http\\HttpGraphObj\:\:\$query_obj_list has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: src/Http/HttpGraphObj.php
+
+		-
+			message: '#^Property PSP\\Http\\HttpGraphObj\:\:\$template_lib has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: src/Http/HttpGraphObj.php
+
+		-
+			message: '#^Property PSP\\Http\\HttpGraphObj\:\:\$variables has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: src/Http/HttpGraphObj.php
+
+		-
+			message: '#^Method PSP\\Log\\Log\:\:alert\(\) has parameter \$object with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Log/Log.php
+
+		-
+			message: '#^Method PSP\\Log\\Log\:\:critical\(\) has parameter \$object with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Log/Log.php
+
+		-
+			message: '#^Method PSP\\Log\\Log\:\:debug\(\) has parameter \$object with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Log/Log.php
+
+		-
+			message: '#^Method PSP\\Log\\Log\:\:emergency\(\) has parameter \$object with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Log/Log.php
+
+		-
+			message: '#^Method PSP\\Log\\Log\:\:error\(\) has parameter \$object with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Log/Log.php
+
+		-
+			message: '#^Method PSP\\Log\\Log\:\:info\(\) has parameter \$object with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Log/Log.php
+
+		-
+			message: '#^Method PSP\\Log\\Log\:\:notice\(\) has parameter \$object with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Log/Log.php
+
+		-
+			message: '#^Method PSP\\Log\\Log\:\:warn\(\) has parameter \$object with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Log/Log.php
+
+		-
+			message: '#^Method PSP\\Log\\Log\:\:warning\(\) has parameter \$object with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Log/Log.php
+
+		-
+			message: '#^Property PSP\\Log\\Log\:\:\$extra_elements type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Log/Log.php
+
+		-
+			message: '#^Method PSP\\Process\\CLI\:\:setOptions\(\) has parameter \$summary with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: src/Process/CLI.php
+
+		-
+			message: '#^Property PSP\\Process\\CLI\:\:\$background_colors has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: src/Process/CLI.php
+
+		-
+			message: '#^Property PSP\\Process\\CLI\:\:\$foreground_colors has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: src/Process/CLI.php
+
+		-
+			message: '#^Method PSP\\Process\\Scheduler\:\:add_one_time_job\(\) has parameter \$parameters with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Process/Scheduler.php
+
+		-
+			message: '#^Method PSP\\Process\\Scheduler\:\:find_long_running_jobs\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: src/Process/Scheduler.php
+
+		-
+			message: '#^Method PSP\\Process\\Scheduler\:\:job_running_queued_check\(\) has parameter \$job_ids with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Process/Scheduler.php
+
+		-
+			message: '#^Method PSP\\Process\\Scheduler\:\:launchJob\(\) has parameter \$job with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Process/Scheduler.php
+
+		-
+			message: '#^Method PSP\\Process\\Scheduler\:\:launchJob\(\) has parameter \$job_list with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Process/Scheduler.php
+
+		-
+			message: '#^Method PSP\\Process\\Scheduler\:\:launchJob\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Process/Scheduler.php
+
+		-
+			message: '#^Method PSP\\Process\\Scheduler\:\:prune_finished_jobs\(\) has parameter \$job_list with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Process/Scheduler.php
+
+		-
+			message: '#^Method PSP\\Process\\Scheduler\:\:unlock_queued_jobs\(\) has parameter \$log_ids with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Process/Scheduler.php
+
+		-
+			message: '#^Method PSP\\Util\\Crypt\:\:guid\(\) has parameter \$secure with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: src/Util/Crypt.php
+
+		-
+			message: '#^Property PSP\\Tests\\Db\\DBTableIteratorTest\:\:\$pages type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/Db/DBTableIteratorTest.php
+
+		-
+			message: '#^Method PSP\\Tests\\Http\\HttpTest\:\:oauth_refresh_params\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/Http/HttpTest.php
+
+		-
+			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertIsArray\(\) with array will always evaluate to true\.$#'
+			identifier: method.alreadyNarrowedType
+			count: 2
+			path: tests/Log/LogTest.php
+
+		-
+			message: '#^Method PSP\\Tests\\Process\\SchedulerIntegrationTest\:\:testIntegration\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: tests/Process/SchedulerIntegrationTest.php
+
+		-
+			message: '#^Property PSP\\Tests\\Process\\SchedulerIntegrationTest\:\:\$db has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: tests/Process/SchedulerIntegrationTest.php
+
+		-
+			message: '#^Property PSP\\Tests\\Process\\SchedulerIntegrationTest\:\:\$testJobId has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: tests/Process/SchedulerIntegrationTest.php
+
+		-
+			message: '#^Property PSP\\Tests\\Process\\SchedulerIntegrationTest\:\:\$testScheduleId has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: tests/Process/SchedulerIntegrationTest.php

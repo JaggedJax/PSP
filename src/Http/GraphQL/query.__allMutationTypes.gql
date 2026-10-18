@@ -1,0 +1,11 @@
+# Pulls a list of all available mutations
+query {
+	__schema {
+		mutationType {
+			fields {
+				name
+				description
+			}
+		}
+	}
+}
