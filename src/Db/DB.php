@@ -225,9 +225,9 @@ class DB
 				$arr_expected_types, $return_result]
 		];
 		
-		$is_select = stripos($query_with_placeholders, 'SELECT') === 0;
-		if ($this->replica && !$is_select && !$return_result) {
-			throw new \PDOException('Only SELECT allowed from a read replica');
+		$is_select = self::is_read_query($query_with_placeholders);
+		if ($this->replica && !$is_select) {
+			throw new \PDOException('Only read queries allowed on a read replica');
 		}
 		
 		if ($this->log_next_query) {
@@ -371,9 +371,9 @@ class DB
 			$count++;
 		}
 		
-		$is_select = stripos($query_with_placeholders, 'SELECT') === 0;
-		if ($this->replica && !$is_select && !$return_result) {
-			throw new \PDOException('Only SELECT allowed from a read replica');
+		$is_select = self::is_read_query($query_with_placeholders);
+		if ($this->replica && !$is_select) {
+			throw new \PDOException('Only read queries allowed on a read replica');
 		}
 		
 		if ($this->log_next_query) {
@@ -454,9 +454,9 @@ class DB
 			'params' => [$query, $return_result]
 		];
 		
-		$is_select = stripos($query, 'SELECT') === 0;
-		if ($this->replica && !$is_select && !$return_result) {
-			throw new \PDOException('Only SELECT allowed from a read replica');
+		$is_select = self::is_read_query($query);
+		if ($this->replica && !$is_select) {
+			throw new \PDOException('Only read queries allowed on a read replica');
 		}
 		
 		if ($this->log_next_query) {
@@ -1171,6 +1171,21 @@ class DB
 		).") failed";
 	}
 	
+	/**
+	 * Is this a query that only reads? SELECT, SHOW, DESCRIBE, EXPLAIN, or a WITH clause that does not write
+	 * @param string $query
+	 * @return bool
+	 */
+	private static function is_read_query(string $query): bool
+	{
+		$query = ltrim($query, " \t\n\r(");
+		if (preg_match('/^(SELECT|SHOW|DESCRIBE|DESC|EXPLAIN)\b/i', $query)) {
+			return true;
+		}
+		// A WITH clause can also start an UPDATE or DELETE
+		return preg_match('/^WITH\b/i', $query) === 1 && preg_match('/\b(INSERT|UPDATE|DELETE|REPLACE)\b/i', $query) !== 1;
+	}
+
 	/**
 	 * Set global flag indicating if last query was run on primary or replica DB
 	 * @return void
