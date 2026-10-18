@@ -124,6 +124,19 @@ class Log
 	}
 	
 	/**
+	 * Add app ID fields (EG: customer_id) that are kept as top-level log fields, and by default also tagged on the trace root span
+	 * @param list<string> $fields
+	 * @param bool $trace Also tag the OpenTelemetry root span with these fields when set with set_element()
+	 */
+	public static function add_fields(array $fields, bool $trace = true): void
+	{
+		LogProcessor::add_fields(...$fields);
+		if ($trace) {
+			Telemetry::add_taggable_ids(...$fields);
+		}
+	}
+
+	/**
 	 * Remove an extra element from future logs
 	 * @param string $key
 	 * @return void
