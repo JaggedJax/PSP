@@ -162,17 +162,17 @@ $data = $http->get('protected/resource');
 
 ## Log Sanitization (`strip_credentials`)
 
-Prevent credentials, tokens, and confidential customer data from leaking into logs:
+The `Authorization`, `Proxy-Authorization` and `Cookie` request headers are never logged (`Http::SECRET_HEADERS`). Add other secret fields to hide:
 
 ```php
 $http->strip_credentials(
-    headers: ['Authorization', 'X-Api-Key'],
+    headers: ['X-Api-Key'],
     get_params: ['token', 'secret'],
     data_fields: ['password', 'card_number', 'cvv']
 );
 ```
 
-Matching values in request headers, query strings, and request bodies are replaced with `[STRIPPED]` in log outputs.
+Header names match in any case. Matching header values are replaced with `**REMOVED**` and query string values with `__REMOVED__` in the log. Request body fields are not hidden yet.
 
 ---
 

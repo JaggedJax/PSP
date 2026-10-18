@@ -77,7 +77,10 @@ class Http
 	private $rate_limit_sleep = 30; // # seconds to sleep
 	private $rate_limit_http_code = [429]; // http codes to detect as over rate limit
 	
-	private $strip_credentials = ['header' => ['Authorization','authorization']]; // List of get, header, and body fields to strip out when logging
+	/** Request headers that are never logged, in lowercase. strip_credentials() adds to these */
+	public const array SECRET_HEADERS = ['authorization', 'proxy-authorization', 'cookie'];
+
+	private $strip_credentials = ['header' => []]; // List of get, header, and body fields to strip out when logging, added to SECRET_HEADERS
 	
 	private $ch;
 	private Log $log;
@@ -385,12 +388,12 @@ class Http
 	}
 	
 	/**
-	 * List fields to hide when logging
-	 * @param string[] $headers List of header field names. EG: ['Authorization']
+	 * List fields to hide when logging. The SECRET_HEADERS are always hidden
+	 * @param string[] $headers List of header field names, any case. EG: ['X-Api-Key']
 	 * @param string[] $get_params List of field names. EG: ['password','api_key']
 	 * @param string[] $data_fields List of field names. EG: ['password','api_key']
 	 */
-	public function strip_credentials(array $headers = ['Authorization'], array $get_params = [], array $data_fields = [])
+	public function strip_credentials(array $headers = [], array $get_params = [], array $data_fields = [])
 	{
 		$this->strip_credentials = [
 			'header' => $headers,
@@ -615,6 +618,21 @@ class Http
 	}
 	
 	/**
+	 * Hide the values of secret request headers
+	 * @param string[] $headers Header strings. EG: "Authorization: Bearer abc"
+	 * @param string[] $secret_names Header names to hide, added to SECRET_HEADERS. Any case
+	 * @return string[]
+	 */
+	public static function strip_headers(array $headers, array $secret_names = []): array
+	{
+		$secret_names = array_merge(self::SECRET_HEADERS, array_map('strtolower', $secret_names));
+		return array_map(static function ($header) use ($secret_names) {
+			$name = explode(':', (string)$header, 2)[0];
+			return in_array(strtolower(trim($name)), $secret_names, true) ? "$name: **REMOVED**" : $header;
+		}, $headers);
+	}
+	
+	/**
 	 * Log the most recent call to the datalogger. Sets $this->last_datalogger_id.
 	 * Falls back to traditional log if Datalogger unavailable
 	 * @param HttpException|null $exception Any exception that was thrown
@@ -632,15 +650,7 @@ class Http
 		}
 		
 		// Sanitize header data before logging
-		// WARNING: This permanently removes the header values from last_headers_sent
-		if (!empty($this->strip_credentials['header']) && !empty($this->last_headers_sent)) {
-			array_walk($this->last_headers_sent, function (&$value, $header) {
-				$name = explode(':', $value, 2)[0] ?? '';
-				if (in_array($name, $this->strip_credentials['header'])) {
-					$value = $name.': **REMOVED**';
-				}
-			});
-		}
+		$request_headers = self::strip_headers($this->last_headers_sent ?? [], $this->strip_credentials['header'] ?? []);
 		
 		// Format header as numerically indexed array for MongoDB
 		$response_headers = self::header_convert($this->response_headers);
@@ -713,7 +723,7 @@ class Http
 				'data' => $this->last_request,
 				//TODO: Have proper type handling by setting in Http constructor
 				'format' => $this->json ? 'json' : 'xml',
-				'headers' => $this->last_headers_sent,
+				'headers' => $request_headers,
 			],
 			'response' => [
 				// Response
