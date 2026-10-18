@@ -22,7 +22,7 @@ use function Amp\delay;
 use function Amp\Future\await;
 
 /**
- * Object to manage launching and running IM scheduled jobs
+ * Object to manage launching and running scheduled jobs
  */
 class Scheduler
 {
@@ -72,6 +72,7 @@ class Scheduler
 	 * @param int $batch_size Grab and Launch this many jobs at a time
 	 * @return array{success:bool, code:int|null, message:string}
 	 * Return codes:
+	 * 5: concurrent_job_limit missing from config > scheduler
 	 * 95: Lock not acquired
 	 * 96: Main loop failed
 	 * null: Success
@@ -79,9 +80,8 @@ class Scheduler
 	public static function RunJobLauncher($batch_size = 10)
 	{
 		if (empty(Config::get('scheduler')['concurrent_job_limit'])) {
-			echo 'Must set concurrent_job_limit in config > scheduler'.PHP_EOL;
-			Log::error('FIXME: Must set concurrent_job_limit in config > scheduler');
-			exit(5);
+			Log::error('Must set concurrent_job_limit in config > scheduler');
+			return ['success' => false, 'code' => 5, 'message' => 'Must set concurrent_job_limit in config > scheduler'];
 		}
 		
 		$lock_name = 'job_runner';
@@ -1500,7 +1500,6 @@ class Scheduler
 		}
 		catch (\Exception $e) {
 			Log::critical("Failed checking DB Stored Precedures - ".$e->getMessage()."\nQuery: $qry");
-			//Email::send_email($emails, "Scheduler Failed checking database on server: ".Server::server_info()['hostname'], "Error Output: ".$e->getMessage()."\n\nQuery: $qry");
 			return false;
 		}
 		
@@ -1526,7 +1525,6 @@ class Scheduler
 				}
 				catch (\Exception $e) {
 					Log::error("Couldn't update job_id {$bad_job['job_id']} to use buckets.\n".$e->getMessage());
-					//Email::send_email($emails, "Scheduler Failed fixing job schedule on server: ".Server::server_info()['hostname'], "Couldn't update job_id {$bad_job['job_id']} to use buckets.\n\n".$e->getMessage());
 				}
 			}
 			
@@ -1624,26 +1622,9 @@ class Scheduler
 			Log::error('Failed to update jobs past their runtime_max_mins: '.$e->getMessage());
 		}
 
-		//TODO: Implement better process to notify than email. We should log these somewhere for review
-		// Send email/log if job running longer than allowed time
 		foreach ($long_jobs as $long_job) {
-			/*
-			$message = "This script has been running for over {$long_job['runtime_max_mins']} minutes. Check that it is not stuck in a loop or consider raising the 'runtime_max_mins' parameter for this job.\n";
-			if ($long_job['allow_duplicates'] == 'N'){
-				$message .= "This script doesn't allow multiple copies to run at once, but because it has gone over its max-run-time, future attempts to run will be permitted.\n";
-			}
-			$message .= "\nServer: {$long_job['server']}\nCommand: {$long_job['command']}\nJob ID: {$long_job['log_id']}\nLog ID: {$long_job['log_id']}";
-			*/
 			Log::warning("Long-Running Script " . ($long_job['type'] == 'recurring' ? "job_id: {$long_job['job_id']} log_id: {$long_job['log_id']}" : "job_once_id: {$long_job['job_once_id']}"));
-			//Email::send_email(explode(',', $long_job['contact']), "Long-Running Scheduled Script <{$long_job['job_name']}> on server: <{$long_job['server']}>", $message);
 		}
-		/*
-			exit(0);
-			break;
-		default: // PARENT
-			break;
-	}
-		 */
 	}
 
 	/**

@@ -20,9 +20,9 @@ class History
 
 	/**
 	 * Create new history entry
-	 * @param string $table EG: pay_account
-	 * @param string $field_changed EG: support_plan_pk or extra_params.reject_unmapped_ship_codes. Use ADDED/REMOVED for new/deleted records
-	 * @param int $record_pk PK value for the db_table being updated. EG. an order_header_pk or a pay_account_pk
+	 * @param string $table EG: users
+	 * @param string $field_changed EG: email or settings.notify. Use ADDED/REMOVED for new/deleted records
+	 * @param int $record_pk PK value for the db_table being updated. EG. a user_id
 	 * @param null|string|int|float|array $old_val Array when record deleted. Will be JSON encoded
 	 * @param null|string|int|float|array $new_val Array when record created. Will be JSON encoded
 	 * @param list<string>|null $log_ids Log IDs that explain the change. Null uses the open LogTrail
@@ -66,9 +66,9 @@ class History
 
 	/**
 	 * Build one history table row, redacting passwords and JSON-encoding array values
-	 * @param string $table EG: pay_account
-	 * @param string $field_changed EG: support_plan_pk or extra_params.reject_unmapped_ship_codes. Use ADDED/REMOVED for new/deleted records
-	 * @param int $record_pk PK value for the db_table being updated. EG. an order_header_pk or a pay_account_pk
+	 * @param string $table EG: users
+	 * @param string $field_changed EG: email or settings.notify. Use ADDED/REMOVED for new/deleted records
+	 * @param int $record_pk PK value for the db_table being updated. EG. a user_id
 	 * @param null|string|int|float|array $old_val Array when record deleted. Will be JSON encoded
 	 * @param null|string|int|float|array $new_val Array when record created. Will be JSON encoded
 	 * @param list<string>|null $log_ids Log IDs that explain the change. Null uses the open LogTrail
@@ -108,7 +108,7 @@ class History
 
 	/**
 	 * Get history entries recorded for a record, newest first
-	 * @param string $table EG: warehouse_order
+	 * @param string $table EG: users
 	 * @param int $record_pk PK value for the db_table the entries were recorded against
 	 * @return array<int,array{history_pk:int,table:string,field:string,record:int,changed_date:string,old_value:?string,new_value:?string,changed_by:?string,log_ids:?string}>
 	 */

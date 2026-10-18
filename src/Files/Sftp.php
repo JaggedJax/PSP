@@ -38,6 +38,9 @@ class Sftp implements RemoteFileClient
 	 */
 	public function login(string $username, string $password = '', string $private_key = '', string $key_passphrase = '', string $expected_fingerprint = ''): void
 	{
+		if (!class_exists(SftpConnection::class)) {
+			throw new SftpException('SFTP needs the phpseclib/phpseclib package');
+		}
 		try {
 			$sftp = new SftpConnection($this->host, $this->port, $this->timeout);
 			$host_key = $sftp->getServerPublicHostKey();

@@ -72,8 +72,8 @@ class DB
 			$this->connected = true;
 		}
 		catch (PDOException $e) {
-			//TODO: What to do here
-			die("Database connection failed: " . $e->getMessage());
+			$this->connected = false;
+			throw new PDOException('Database connection failed: ' . $e->getMessage(), (int)$e->getCode(), $e);
 		}
 	}
 
@@ -226,6 +226,9 @@ class DB
 		];
 		
 		$is_select = stripos($query_with_placeholders, 'SELECT') === 0;
+		if ($this->replica && !$is_select && !$return_result) {
+			throw new \PDOException('Only SELECT allowed from a read replica');
+		}
 		
 		if ($this->log_next_query) {
 			Log::info($query_with_placeholders, $arr_parameters, 1);
@@ -316,9 +319,6 @@ class DB
 			else {
 				if (!$is_select) {
 					Globals::instance()->last_db_write_time = microtime(true);
-					if ($this->replica) {
-						throw new \PDOException('Only SELECT allowed from a read replica');
-					}
 				}
 				return true;
 			}
@@ -372,6 +372,9 @@ class DB
 		}
 		
 		$is_select = stripos($query_with_placeholders, 'SELECT') === 0;
+		if ($this->replica && !$is_select && !$return_result) {
+			throw new \PDOException('Only SELECT allowed from a read replica');
+		}
 		
 		if ($this->log_next_query) {
 			Log::info($query_with_placeholders, $arr_parameters);
@@ -420,9 +423,6 @@ class DB
 			else {
 				if (!$is_select) {
 					Globals::instance()->last_db_write_time = microtime(true);
-					if ($this->replica) {
-						throw new \PDOException('Only SELECT allowed from a read replica');
-					}
 				}
 				return true;
 			}
@@ -455,6 +455,9 @@ class DB
 		];
 		
 		$is_select = stripos($query, 'SELECT') === 0;
+		if ($this->replica && !$is_select && !$return_result) {
+			throw new \PDOException('Only SELECT allowed from a read replica');
+		}
 		
 		if ($this->log_next_query) {
 			Log::info($query, stacktrace_skip:1);
@@ -505,9 +508,6 @@ class DB
 			else {
 				if (!$is_select) {
 					Globals::instance()->last_db_write_time = microtime(true);
-					if ($this->replica) {
-						throw new \PDOException('Only SELECT allowed from a read replica');
-					}
 				}
 				return true;
 			}
@@ -889,6 +889,11 @@ class DB
 	) {
 		if ($this->replica) {
 			throw new \PDOException('Do not call update() from a read replica');
+		}
+		if (empty($arr_where_parameters) || empty($arr_update_parameters)) {
+			$this->error = "Update of $table_name needs where and update parameters";
+			Log::error($this->error);
+			return false;
 		}
 		
 		if (strpos($table_name, '.') === false) {

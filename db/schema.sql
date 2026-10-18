@@ -26,7 +26,8 @@ CREATE TABLE `history` (
   `changed_by` varchar(75) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `log_ids` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   PRIMARY KEY (`history_pk`),
-  KEY `history_changed_date_index` (`changed_date`)
+  KEY `history_changed_date_index` (`changed_date`),
+  KEY `history_table_record_index` (`table`,`record`,`changed_date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `job_log` (

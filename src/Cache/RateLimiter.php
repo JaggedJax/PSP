@@ -2,6 +2,8 @@
 
 namespace PSP\Cache;
 
+use PSP\App\Server;
+
 /**
  * Rate limit actions per IP address with MemCache
  */
@@ -9,6 +11,7 @@ class RateLimiter
 {
 	/**
 	 * Call this to ensure users don't abuse a specific segment of code. Response of TRUE means to allow access
+	 * Without a MemCache connection there is no limit and this always returns TRUE
 	 * TODO: Ensure MemCache works cross server
 	 * @param string $rate_limit_type Name of what you want to rate limit. A separate limit will be kept for each type
 	 * @param int $attemptsBeforeLock Number of requests allowed (every $window_minutes minutes) before block
@@ -19,7 +22,7 @@ class RateLimiter
 	public static function allow(string $rate_limit_type = 'general', int $attemptsBeforeLock = 7, string|null $ip_address = null, int $window_minutes = 15): bool
 	{
 		if (empty($ip_address)) {
-			$ip_address = $_SERVER['HTTP_CF_CONNECTING_IP'] ?? $_SERVER['REMOTE_ADDR'] ?? 'NA';
+			$ip_address = Server::get_ip() ?? 'NA';
 		}
 		
 		// TODO: Check against banned IP list

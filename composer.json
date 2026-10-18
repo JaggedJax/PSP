@@ -41,7 +41,8 @@
 	"minimum-stability": "stable",
 	"prefer-stable": true,
 	"scripts": {
-		"test": "php -d auto_prepend_file=vendor/antecedent/patchwork/Patchwork.php vendor/bin/phpunit",
+		"test": "php -d auto_prepend_file=vendor/antecedent/patchwork/Patchwork.php vendor/bin/phpunit --testsuite Unit",
+		"test:db": "php -d auto_prepend_file=vendor/antecedent/patchwork/Patchwork.php vendor/bin/phpunit --testsuite Database",
 		"stan": "phpstan analyse --memory-limit=1G",
 		"cs": "php-cs-fixer fix --dry-run --diff"
 	},

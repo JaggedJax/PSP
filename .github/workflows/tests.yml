@@ -46,7 +46,7 @@ jobs:
       run: vendor/bin/phpstan analyse --no-progress --memory-limit=1G
 
     - name: Unit tests
-      run: php -d auto_prepend_file=vendor/antecedent/patchwork/Patchwork.php vendor/bin/phpunit --testsuite Unit
+      run: composer test
 
     - name: Database tests
-      run: php -d auto_prepend_file=vendor/antecedent/patchwork/Patchwork.php vendor/bin/phpunit --testsuite Database
+      run: composer test:db

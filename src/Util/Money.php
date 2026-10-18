@@ -44,7 +44,7 @@ class Money
 	
 	/**
 	 * Calculate the tax rate as a decimal (4 Decimal places of precision)
-	 * @param float|int $price Total taxable price. Example: sub_total - order_discount (+ shipping_handling) Only shipping_handling is taxable.
+	 * @param float|int $price Total taxable price. Example: sub_total - discount
 	 * @param float|int $tax_amt Dollar value of taxes
 	 * @param string $tax_type inclusive or exclusive
 	 * @return float Tax rate as decimal. Eg. 20% will return as: .2000 (4 Decimal places of precision)

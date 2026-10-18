@@ -735,10 +735,6 @@ abstract class DBTable
 			}
 		}
 
-		//TODO: If any __ properties (aka linked tables) are set but the PK isn't, create and link them
-		// Note: We're handling this in /src/Logic objects and that's probably best.
-		
-
 		return $this->{static::$_table['pk_field']} ?? false;
 	}
 	

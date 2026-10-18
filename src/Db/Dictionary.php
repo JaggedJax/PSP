@@ -14,11 +14,14 @@ abstract class Dictionary
 
 	/**
 	 * Get one random value from dictionary
-	 * @return mixed
+	 * @return mixed Null if the dictionary is empty
 	 */
 	public static function get_one(): mixed
 	{
-		$values = static::get_values();
+		$values = array_values((array)static::get_values());
+		if (empty($values)) {
+			return null;
+		}
 
 		return $values[Crypt::rand_int(0, count($values) - 1)];
 	}

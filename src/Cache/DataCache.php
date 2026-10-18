@@ -67,8 +67,6 @@ class DataCache
 			((empty($result) && !($cache_handling & self::CACHED_ONLY))
 				// OR if result is expired
 				|| (($cache_handling & self::INCLUDE_EXPIRED) && !empty($result) && $result->expired))
-			// Allow 4 refresh requests per minute per type/account
-			//&& Login::general_rate_limit_allow("DataCache_{$cache_name}", 4, "{$cache_level}_{$pk}", 1)
 		) {
 			// Fix improper formatting of $fallback_function args
 			if (!empty($fallback_function['args']) && !is_array($fallback_function['args'])) {

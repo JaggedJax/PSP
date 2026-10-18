@@ -50,6 +50,7 @@ Set app-specific values once, before other PSP calls:
 
 ```php
 use PSP\App\Config;
+use PSP\App\Server;
 use PSP\Cache\DataCache;
 use PSP\Cache\MemCache;
 use PSP\Db\DBTable;
@@ -76,6 +77,10 @@ DataCache::add_cache_levels('Customer');
 // Who made a change, for History entries
 History::set_changed_by_resolver(fn () => isset($_SESSION['user_id']) ? 'user_id:' . $_SESSION['user_id'] : null);
 
+// Proxy headers that hold the client IP. Without this, Server::get_ip() uses REMOTE_ADDR
+Server::trust_ip_headers('HTTP_CF_CONNECTING_IP');
+
+// RateLimiter needs MemCache. Without a connection it allows every request
 MemCache::connect('127.0.0.1');
 ```
 
@@ -83,9 +88,9 @@ MemCache::connect('127.0.0.1');
 
 ```bash
 composer install
-composer test -- --testsuite Unit
+composer test
 composer stan
 composer cs
 ```
 
-The Database suite needs a MySQL database with `db/schema.sql` loaded. Connection settings are in `tests/config/db.json`.
+`composer test:db` runs the Database suite. It needs a MySQL database with `db/schema.sql` loaded. Connection settings are in `tests/config/db.json`.

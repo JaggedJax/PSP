@@ -60,12 +60,30 @@ class Server
 		];
 	}
 
+	/** @var list<string> Server keys of proxy headers that hold the client IP, checked in order */
+	private static array $ip_headers = [];
+
 	/**
-	 * Get the connecting user's IP. NULL if none or not a web request
+	 * Trust client IP headers set by a proxy in front of the app. Clients can send these headers too, so only add headers your proxy sets
+	 * @param string ...$headers $_SERVER keys, checked in order. EG: HTTP_CF_CONNECTING_IP
+	 */
+	public static function trust_ip_headers(string ...$headers): void
+	{
+		self::$ip_headers = array_values($headers);
+	}
+
+	/**
+	 * Get the connecting user's IP from a trusted proxy header, else REMOTE_ADDR. NULL if none or not a web request
 	 * @return string|null
 	 */
 	public static function get_ip(): ?string
 	{
-		return $_SERVER['HTTP_CF_CONNECTING_IP'] ?? $_SERVER['HTTP_X_FORWARDED_FOR'] ?? $_SERVER['REMOTE_ADDR'] ?? null;
+		foreach (self::$ip_headers as $header) {
+			if (!empty($_SERVER[$header])) {
+				// X-Forwarded-For can hold a list: client, proxy1, proxy2
+				return trim(explode(',', (string)$_SERVER[$header])[0]);
+			}
+		}
+		return $_SERVER['REMOTE_ADDR'] ?? null;
 	}
 }

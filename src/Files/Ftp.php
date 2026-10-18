@@ -8,8 +8,8 @@ use PSP\Log\Log;
  * Thin wrapper around PHP's native ftp_* extension for uploading a local file to a remote FTP/FTPS
  * server. Mirrors the Http helper's shape: construct once with connection details, call
  * upload_file() to send data, throws FtpException on any failure. Uploads stream directly from the
- * local file handle (not through an in-memory string), so callers building large exports (see
- * Transport\FtpTransport) never need to hold the whole file in memory to send it.
+ * local file handle (not through an in-memory string), so callers building large exports never
+ * need to hold the whole file in memory to send it.
  */
 class Ftp implements RemoteFileClient
 {
@@ -41,6 +41,9 @@ class Ftp implements RemoteFileClient
 	 */
 	public function login(string $username, string $password): void
 	{
+		if (!function_exists('ftp_connect')) {
+			throw new FtpException('FTP needs the PHP ftp extension');
+		}
 		$connection = $this->ssl
 			? @ftp_ssl_connect($this->host, $this->port)
 			: @ftp_connect($this->host, $this->port);
