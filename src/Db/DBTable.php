@@ -665,7 +665,7 @@ abstract class DBTable
 			where_and: $where_and
 		);
 		
-		return $records['count'] ?? 0;
+		return (int)($records[0]['count'] ?? $records['count'] ?? 0);
 	}
 
 	/**
